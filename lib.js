@@ -5,8 +5,40 @@ const barHeight = 2;
 const barSpacing = 2;
 const radius = 140;
 const beta = Math.PI * 0.75;
-const URL = "https://datamix.media/modulisme/track/1761314774_383578416_1204704559.mp3";
+const URL = "modulisme.mp3";
 let started = false;
+
+class AnalyserFromSourceURL extends AnalyserNode {
+  constructor(url, context = new AudioContext()) {
+    super(context);
+
+    this.audioElement = new Audio(url);
+    this.audioElement.crossOrigin = "anonymous";
+
+    this.audioSourceNode = context.createMediaElementSource(this.audioElement);
+
+    this.audioSourceNode.connect(this);
+    this.connect(context.destination);
+  }
+
+  getFrequencyData() {
+    const frequencyData = new Uint8Array(this.frequencyBinCount);
+
+    this.getByteFrequencyData(frequencyData);
+
+    return frequencyData;
+  }
+
+  playAudio() {
+    this.audioElement.play();
+  }
+
+  pauseAudio() {
+    this.audioElement.pause();
+  }
+}
+
+
 
 function start() {
   let shockWaveSize = 0;
@@ -154,3 +186,43 @@ onPressCanvas(() => {
     started = true;
   }
 });
+
+function updateGradient()
+{
+  
+  if ( $===undefined ) return;
+  
+var c0_0 = colors[colorIndices[0]];
+var c0_1 = colors[colorIndices[1]];
+var c1_0 = colors[colorIndices[2]];
+var c1_1 = colors[colorIndices[3]];
+
+var istep = 1 - step;
+var r1 = Math.round(istep * c0_0[0] + step * c0_1[0]);
+var g1 = Math.round(istep * c0_0[1] + step * c0_1[1]);
+var b1 = Math.round(istep * c0_0[2] + step * c0_1[2]);
+var color1 = "rgba("+r1+","+g1+","+b1+",0.7)";
+
+var r2 = Math.round(istep * c1_0[0] + step * c1_1[0]);
+var g2 = Math.round(istep * c1_0[1] + step * c1_1[1]);
+var b2 = Math.round(istep * c1_0[2] + step * c1_1[2]);
+var color2 = "rgba("+r2+","+g2+","+b2+",0.7)";
+
+ $('canvas').css({
+   background: "-webkit-gradient(linear, left top, right top, from("+color1+"), to("+color2+"))"}).css({
+    background: "-moz-linear-gradient(left, "+color1+" 0%, "+color2+" 100%)"});
+  
+  step += gradientSpeed;
+  if ( step >= 1 )
+  {
+    step %= 1;
+    colorIndices[0] = colorIndices[1];
+    colorIndices[2] = colorIndices[3];
+    
+    //pick two new target color indices
+    //do not pick the same as the current one
+    colorIndices[1] = ( colorIndices[1] + Math.floor( 1 + Math.random() * (colors.length - 1))) % colors.length;
+    colorIndices[3] = ( colorIndices[3] + Math.floor( 1 + Math.random() * (colors.length - 1))) % colors.length;
+    
+  }
+}
