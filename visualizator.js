@@ -5,7 +5,7 @@ const barHeight = 2;
 const barSpacing = 2;
 const radius = 140;
 const beta = Math.PI * 0.75;
-const URL = "https://radiofg.impek.com/fg";
+const URL = "https://datamix.media/modulisme/track/1761314774_383578416_1204704559.mp3";
 let started = false;
 
 function start() {
